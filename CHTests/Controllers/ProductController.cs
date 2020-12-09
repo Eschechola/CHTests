@@ -36,7 +36,13 @@ namespace CHTests.Controllers
         {
             try
             {
-                return Ok(await _productRepository.Update(product));
+                var productExists = await _productRepository.Get(product.Id);
+
+                if (productExists == null)
+                    return StatusCode(400, ("Nenhum produto foi encontrado com o Id" + product.Id));
+
+                var productUpdated = await _productRepository.Update(product);
+                return Ok(productUpdated);
             }
             catch (Exception)
             {
@@ -50,8 +56,13 @@ namespace CHTests.Controllers
         {
             try
             {
+                var productExists = await _productRepository.Get(id);
+
+                if (productExists == null)
+                    return BadRequest("O produto informado não foi encontrado!");
+
                 await _productRepository.Remove(id);
-                return Ok();
+                return Ok("Usuário deletado com sucesso!");
             }
             catch (Exception)
             {
