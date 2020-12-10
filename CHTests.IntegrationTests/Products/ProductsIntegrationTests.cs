@@ -19,22 +19,13 @@ namespace CHTests.IntegrationTests.Products
 
         #region Methods
 
-        private DbContextOptions<TestsContext> GetContextOptions()
-        {
-            return new DbContextOptionsBuilder<TestsContext>()
-                   .UseInMemoryDatabase("Tests.db")
-                   .Options;
-        }
-
-        private FakeContext GetContext()
-        {
-            var contextOptions = GetContextOptions();
-            return new FakeContext(contextOptions);
-        }
-
         private IProductRepository GetProductRepository()
         {
-            var context = GetContext();
+            var contextOptions = new DbContextOptionsBuilder<TestsContext>()
+                                 .UseInMemoryDatabase(Guid.NewGuid().ToString().Substring(0, 10) + ".db")
+                                 .Options;
+
+            var context = new FakeContext(contextOptions);
             return new ProductRepository(context);
         }
 
